@@ -19,28 +19,39 @@ soup = BeautifulSoup(esunbank,"html.parser")
 table = soup.find(id="exchangeRate")
 
 tbody = table.find("tbody")
-trs = tbody.find_all("tr")
+trs = tbody.find_all("tr",recursive=False)[1:]  #recursice=False關閉遞迴搜尋
 
 for row in trs:
-    tds = row.find_all("td",recursive=False) #recursice=False關閉遞迴搜尋
-    if len(tds) == 4:
-        print(tds[0].text.split()[0],tds[0].text.split()[1],)
-        print(tds[1].text)
-        print(tds[2].text)
-        print(tds[3].text)
-        print()
-        
-"""
-recursice=False關閉遞迴搜尋
-只抓下一層的子節點
-"""
+    tds = row.find_all("td",recursive=False)    #recursice=False關閉遞迴搜尋
+    currency = tds[0].text.split()
+    currencyIn = tds[0].text.split()[2]
+    currencyOut = tds[0].text.split()[3]
+    """即期匯率"""
+    spotRate = tds[1].text.strip().split()
 
+    #print(len(tds))
+    print(currency[0],currency[1])     
+    print(currencyIn + ":" + spotRate[0])
+    print(currencyOut + ":" + spotRate[1])    
+    print(tds[2].text.strip()) 
+    print(tds[3].text.strip())
+    print()
+    # tds[2]、tds[3]包含銀行買入、銀行賣出 兩個數值
+    
+"""     recursice=False 關閉遞迴搜尋     
+        否则tr、td會重複抓到以下子截點 [] [銀行買入] [銀行賣出]
+
+<table class="d-lg-none bankState">
+    <tbody>
+    <tr>
+        <td label=""></td>
+        <td label="即期匯率">
+            銀行買入
+        </td>
+        <td label="網銀/App優惠">
+            銀行賣出
+        </td>
+    </tr>
+    </tbody>
+</table
 """
-row = table.find("div",class_="row")
-m = row.text.split()
-print(m[2],m[1])
-"""
-            
-        
-        
-        
